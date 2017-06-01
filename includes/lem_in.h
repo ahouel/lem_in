@@ -6,7 +6,7 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 14:48:13 by ahouel            #+#    #+#             */
-/*   Updated: 2017/05/30 16:37:01 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/05/31 17:58:30 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "libft.h"
 
+# define debug(x) fprintf(stderr, "\x1B[31m%s\x1B[0m\n", x)
 /*
 **	Environment
 */
@@ -49,9 +50,12 @@ typedef struct	s_cell
 	char			fourmie;
 	char			*name;
 	int				dist;
+	struct s_link	*link_lst;
 	struct s_cell	*next;
 }				t_cell;
 
+int	cells_parser(t_env *e);
+int	links_parser(t_env *e);
 int	lem_in_init(void);
 int	parser(t_env *e);
 #endif

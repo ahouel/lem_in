@@ -6,7 +6,7 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/30 14:54:25 by ahouel            #+#    #+#             */
-/*   Updated: 2017/05/30 15:29:31 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/06/01 18:37:21 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,15 @@ int	lem_in_init(void)
 	t_cell	*cell;
 	int		ret;
 
+	cell = NULL;
 	ret = 0;
+	debug("b");
 	init_vars(&e, &cell);
 	if ((ret = parser(&e)) < 0)
+	{
+		debug("y");
 		return (ret);
+	}
+	debug("Y");
 	return (ret);
 }

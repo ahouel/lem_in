@@ -6,7 +6,7 @@
 #    By: ahouel <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/03 08:37:55 by ahouel            #+#    #+#              #
-#    Updated: 2017/05/30 15:29:47 by ahouel           ###   ########.fr        #
+#    Updated: 2017/05/31 16:26:39 by ahouel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,9 @@ HDIR = ./includes
 LDIR = ./libft
 FCTS = main \
 	   lem_in_init \
-	   parser
+	   parser \
+	   cells_parser \
+	   links_parser
 SRCS = $(addsuffix .c, $(FCTS))
 SRC = $(addprefix $(VPATH), $(SRCS))
 OBJ = $(SRCS:.c=.o)

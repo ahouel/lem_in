@@ -6,7 +6,7 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 14:49:02 by ahouel            #+#    #+#             */
-/*   Updated: 2017/05/30 15:21:43 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/05/31 17:58:25 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ int	main(int ac, char **av)
 		usage();
 		return (ret);
 	}
+	debug("a");
 	ret = lem_in_init();
+	debug("Z");
 	if (av)
 		return (ac);
 	return (ret);

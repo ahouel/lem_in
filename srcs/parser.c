@@ -6,7 +6,7 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/30 15:30:37 by ahouel            #+#    #+#             */
-/*   Updated: 2017/05/30 17:19:37 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/06/01 18:37:21 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,63 +23,58 @@ static int	get_nb_fourmies(char *line)
 	return (ft_atoi(line));
 }
 
-static int	cells_reader(t_env *e, char type)
+static void diboug(t_env *e)
 {
-	size_t	i;
-	t_cell	cell;
+	t_cell *tmp;
+	t_link	*tp;
 
-	i = 0;
-	if (!(ft_lstnew((void*)&cell, sizeof(cell))))
-		return (0);
-	ft_lstadd((t_list**)e->cell_lst, (t_list*)&cell);
-	while ((*e->line)[i] && (*e->line)[i] != ' ')
-		++i;
-	if (!(cell.name = ft_strndup(*e->line, i)))
-		return (0);
-	cell.type = type;
-	cell.fourmie = n;
-	cell.dist = -1;
-	return (1);
+	tmp = NULL;
+	tmp = *e->cell_lst;
+	while (tmp)
+	{
+		tp = tmp->link_lst;
+		while (tp)
+		{
+			ft_printf("%{RED}p\n", tp);
+			tp = tp->next;
+		}
+		tmp = tmp->next;
+	}
 }
 
-static int	get_cells(t_env *e)
+static void deboug(t_env *e)
 {
-	int		nb;
+	t_cell *tmp;
 
-	nb = 0;
-	while (get_next_line(0, e->line))
+	tmp = NULL;
+	tmp = *e->cell_lst;
+	while (tmp)
 	{
-		type = 1;
-		if (!(ft_strcmp(*e->line, "##start")))
-		{
-			type = 0;
-			get_next_line(0, e->line);
-		}
-		else if (!(ft_strcmp(*e->line, "##end")))
-		{
-			type = 2;
-			get_next_line(0, e->line);
-		}
-		if (!cells_reader(e))
-			return (-1);
+	ft_printf("%{BLUE}p\t%{BLUE}s\n", tmp, tmp->name);
+		tmp = tmp->next;
 	}
 }
 
 int	parser(t_env *e)
 {
 	char	*line;
+	int		ret;
 
+	ret = 0;
 	line = NULL;
 	e->line = &line;
 	get_next_line(0, &line);
 	if (!line)
 		return (-1);
-	if ((e->nb_f = get_nb_fourmies(line)) < 1)
+	if (!(e->nb_f = get_nb_fourmies(line)))
 		return (-2);
-	if ((e->nb_c = get_cells(e)) < 1)
+	if (!(e->nb_c = cells_parser(e)))
 		return (-2);
-	if (get_links(e) < 1)
-		return (-2);
+	deboug(e);
+	while ((ret = links_parser(e)) > 1)
+		;
+	debug("pata");
+	diboug(e);
 	//algo
 	return (0);
 }

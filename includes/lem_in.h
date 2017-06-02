@@ -6,7 +6,7 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 14:48:13 by ahouel            #+#    #+#             */
-/*   Updated: 2017/05/31 17:58:30 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/06/02 18:09:18 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ typedef struct	s_cell
 	struct s_cell	*next;
 }				t_cell;
 
+int	error_cell(t_env *e, char *line);
+int	error_link(t_env *e, char *line);
 int	cells_parser(t_env *e);
 int	links_parser(t_env *e);
 int	lem_in_init(void);

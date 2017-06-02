@@ -6,22 +6,11 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/30 15:30:37 by ahouel            #+#    #+#             */
-/*   Updated: 2017/06/01 18:37:21 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/06/02 15:37:50 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
-
-static int	get_nb_fourmies(char *line)
-{
-	int	i;
-
-	i = -1;
-	while (line[i])
-		if (!ft_isdigit(line[i]))
-			return (0);
-	return (ft_atoi(line));
-}
 
 static void diboug(t_env *e)
 {
@@ -32,10 +21,11 @@ static void diboug(t_env *e)
 	tmp = *e->cell_lst;
 	while (tmp)
 	{
+		ft_printf("%{RED}s%{RED}s\n", "test dans\t", tmp->name);
 		tp = tmp->link_lst;
 		while (tp)
 		{
-			ft_printf("%{RED}p\n", tp);
+			ft_printf("%{RED}s%{BLUE}s\n", "link vers\t", tp->link->name);
 			tp = tp->next;
 		}
 		tmp = tmp->next;
@@ -66,13 +56,21 @@ int	parser(t_env *e)
 	get_next_line(0, &line);
 	if (!line)
 		return (-1);
-	if (!(e->nb_f = get_nb_fourmies(line)))
+	if ((e->nb_f = ft_atoi(line)) < 1)
+	{
+		debug("fourmie fail");
 		return (-2);
+	}
 	if (!(e->nb_c = cells_parser(e)))
+	{
+		debug("cell fail");
 		return (-2);
+	}
 	deboug(e);
-	while ((ret = links_parser(e)) > 1)
-		;
+	while ((ret = links_parser(e)) > 0)
+	{
+		ft_printf("ret : %d\n", ret);
+	}
 	debug("pata");
 	diboug(e);
 	//algo

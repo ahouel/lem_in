@@ -6,7 +6,7 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/31 13:28:19 by ahouel            #+#    #+#             */
-/*   Updated: 2017/06/02 18:09:14 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/06/03 17:29:06 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,11 @@ int	links_parser(t_env *e)
 	c1 = NULL;
 	c2 = NULL;
 	get_next_line(0, e->line);
+	if (!error_link(e, *e->line))
+	{
+		debug("links error");
+		return (0);
+	}
 	cell1 = NULL;
 	cell2 = *e->cell_lst;
 	c1 = *e->line;

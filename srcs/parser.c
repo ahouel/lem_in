@@ -6,7 +6,7 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/30 15:30:37 by ahouel            #+#    #+#             */
-/*   Updated: 2017/06/02 15:37:50 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/06/08 15:08:54 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,12 @@ int	parser(t_env *e)
 	ret = 0;
 	line = NULL;
 	e->line = &line;
-	get_next_line(0, &line);
+	get_next_line(0, &line); // FREEEEEEEEEEEE
 	if (!line)
 		return (-1);
 	if ((e->nb_f = ft_atoi(line)) < 1)
 	{
+		e->nb_fs = e->nb_f;
 		debug("fourmie fail");
 		return (-2);
 	}
@@ -73,6 +74,6 @@ int	parser(t_env *e)
 	}
 	debug("pata");
 	diboug(e);
-	//algo
-	return (0);
+	ret = resolver(e);
+	return (ret);
 }

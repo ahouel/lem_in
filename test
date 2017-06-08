@@ -1,12 +1,14 @@
 10
-toto 0 0
-tutu 1 1
+tata 0 0
+tete 1 1
 ##start
-tete 2 2
-tyty 1 2
+tutu 2 2
+titi 0 4
 ##end
-tata 0 4
-tata-tyty
-tete-tata
-tata-tutu
+toto 0 4
+tata-toto
+toto-tete
+tutu-tata
+titi-tete
+titi-tutu
 BITE

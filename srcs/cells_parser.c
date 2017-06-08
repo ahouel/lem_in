@@ -6,7 +6,7 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/31 13:23:22 by ahouel            #+#    #+#             */
-/*   Updated: 2017/06/02 17:53:30 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/06/08 15:11:43 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static t_cell	*cell_new(void)
 	if (!(new = (t_cell*)malloc(sizeof(t_cell))))
 		return (NULL);
 	new->type = ' ';
-	new->fourmie = 'n';
+	new->fourmie = 0;
 	new->name = NULL;
 	new->dist = -1;
 	new->link_lst = NULL;
@@ -44,6 +44,7 @@ static int		cells_reader(t_env *e, char type)
 	if (!(new->name = ft_strndup(*e->line, i)))
 		return (0);
 	new->type = type;
+	type == 'a' ? (new->fourmie = e->nb_f) : 0;
 	tmp = *e->cell_lst;
 	*e->cell_lst = new;
 	new->next = tmp;
@@ -68,6 +69,12 @@ int				cells_parser(t_env *e)
 		{
 			type = 'c';
 			get_next_line(0, e->line);
+		}
+		debug(*e->line);
+		if (!error_cell(e, *e->line))
+		{
+			debug("error cell");
+			return (0);
 		}
 		if (!cells_reader(e, type))
 			return (0);

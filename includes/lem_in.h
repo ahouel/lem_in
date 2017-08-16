@@ -6,7 +6,7 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 14:48:13 by ahouel            #+#    #+#             */
-/*   Updated: 2017/08/07 19:59:17 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/08/16 19:48:46 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ typedef struct	s_env
 	int					cheat;
 	struct s_fourmie	*f_tab;
 	struct s_cell		**cell_lst;
-	struct s_way		*way_lst;
 }				t_env;
 
 /*

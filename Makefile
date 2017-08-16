@@ -6,7 +6,7 @@
 #    By: ahouel <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/03 08:37:55 by ahouel            #+#    #+#              #
-#    Updated: 2017/06/05 15:47:57 by ahouel           ###   ########.fr        #
+#    Updated: 2017/08/07 19:56:12 by ahouel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,11 @@ FCTS = main \
 	   links_parser \
 	   error_link \
 	   error_cell \
-	   resolver
+	   resolver \
+	   link_new \
+	   calc_dist \
+	   reader \
+	   sort_links
 SRCS = $(addsuffix .c, $(FCTS))
 SRC = $(addprefix $(VPATH), $(SRCS))
 OBJ = $(SRCS:.c=.o)

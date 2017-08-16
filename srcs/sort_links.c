@@ -1,34 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   sort_links.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/05/29 14:49:02 by ahouel            #+#    #+#             */
-/*   Updated: 2017/08/08 17:31:43 by ahouel           ###   ########.fr       */
+/*   Created: 2017/08/07 19:44:38 by ahouel            #+#    #+#             */
+/*   Updated: 2017/08/07 19:58:52 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-static void	usage(void)
+void	sort_links(t_cell *cell)
 {
-	ft_printf("Usage : ./lem_in < file.map\n");
-}
+	t_link	*link;
+	t_cell	*tmp;
 
-int			main(int ac, char **av)
-{
-	int	ret;
-
-	ret = 0;
-	if (ac != 1 || !av)
+	tmp = NULL;
+	link = cell->link_lst;
+	while (link)
 	{
-		usage();
-		return (ret);
+		if (link->next)
+		{
+			if (link->link->dst > link->next->link->dst)
+			{
+				tmp = link->link;
+				link->link = link->next->link;
+				link->next->link = tmp;
+				link = cell->link_lst;
+			}
+			else
+				link = link->next;
+		}
+		else
+			link = link->next;
 	}
-	ret = lem_in_init();
-	if (ret < 0)
-		ft_putstr("ERROR\n");
-	return (ret);
 }

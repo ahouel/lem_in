@@ -6,7 +6,7 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 14:48:13 by ahouel            #+#    #+#             */
-/*   Updated: 2017/06/06 15:00:54 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/08/07 19:59:17 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,30 @@
 
 # include "libft.h"
 
-# define debug(x) fprintf(stderr, "\x1B[31m%s\x1B[0m\n", x)
+# define CHEAT 1
+
 /*
 **	Environment
 */
 
 typedef struct	s_env
 {
-	int				nb_f;
-	int				nb_fs;
-	int				nb_c;
-	int				x_max;
-	int				y_max;
-	char			**line;
-	struct s_cell	**cell_lst;
+	int					nb_f;
+	int					cheat;
+	struct s_fourmie	*f_tab;
+	struct s_cell		**cell_lst;
+	struct s_way		*way_lst;
 }				t_env;
+
+/*
+** Fourmies
+*/
+
+typedef struct	s_fourmie
+{
+	int				nb;
+	struct s_cell	*cell;
+}				t_fourmie;
 
 /*
 **	Cells links
@@ -50,16 +59,20 @@ typedef struct	s_cell
 	char			type;
 	char			*name;
 	int				fourmie;
-	int				dist;
+	int				dst;
 	struct s_link	*link_lst;
 	struct s_cell	*next;
 }				t_cell;
 
-int	resolver(t_env *e);
-int	error_cell(t_env *e, char *line);
-int	error_link(t_env *e, char *line);
-int	cells_parser(t_env *e);
-int	links_parser(t_env *e);
-int	lem_in_init(void);
-int	parser(t_env *e);
+void			sort_links(t_cell *cell);
+int				reader(t_env *e, char **line, int check, char type);
+t_link			*link_new(void);
+int				calc_dist(t_env *e, t_cell *end, int dst);
+int				resolver(t_env *e);
+int				error_cell(t_env *e, char *line);
+int				error_link(t_env *e, char *line);
+int				cells_parser(t_env *e, char type, char **line);
+int				links_parser(t_env *e, char **line);
+int				lem_in_init(void);
+int				parser(t_env *e);
 #endif

@@ -6,22 +6,31 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/31 13:28:19 by ahouel            #+#    #+#             */
-/*   Updated: 2017/06/03 17:29:06 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/07/30 15:36:14 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-static t_link	*link_new(void)
+static int	links_checker(t_cell *c1, t_cell *c2)
 {
-	t_link	*new;
+	t_link	*link;
 
-	new = NULL;
-	if (!(new = (t_link*)malloc(sizeof(t_link))))
-		return (NULL);
-	new->link = NULL;
-	new->next = NULL;
-	return (new);
+	link = c1->link_lst;
+	while (link)
+	{
+		if (link->link == c2)
+			return (0);
+		link = link->next;
+	}
+	link = c2->link_lst;
+	while (link)
+	{
+		if (link->link == c1)
+			return (0);
+		link = link->next;
+	}
+	return (1);
 }
 
 static int	links_maker(t_cell *c1, t_cell *c2)
@@ -29,6 +38,8 @@ static int	links_maker(t_cell *c1, t_cell *c2)
 	t_link	*tmp;
 	t_link	*new;
 
+	if (!links_checker(c1, c2))
+		return (2);
 	new = NULL;
 	tmp = NULL;
 	if (!(new = link_new()))
@@ -45,58 +56,32 @@ static int	links_maker(t_cell *c1, t_cell *c2)
 	c2->link_lst = new;
 	new->next = tmp;
 	new->link = c1;
-	return (1);
+	return (2);
 }
 
-int	links_parser(t_env *e)
+int			links_parser(t_env *e, char **line)
 {
 	t_cell	*cell1;
 	t_cell	*cell2;
-	char	*c1;
-	char	*c2;
+	size_t	i;
 
-	debug("c");
-	//p-e init c1 c2 cell1 cell2 // a voir
-	c1 = NULL;
-	c2 = NULL;
-	get_next_line(0, e->line);
-	if (!error_link(e, *e->line))
-	{
-		debug("links error");
+	i = 0;
+	if (!error_link(e, *line))
 		return (0);
-	}
 	cell1 = NULL;
 	cell2 = *e->cell_lst;
-	c1 = *e->line;
-	c2 = ft_strchr(*e->line, '-');
-	if (!c2)
+	if (!ft_strchr(*line, '-'))
 		return (0);
-	c2++;
-	debug("d");
-	ft_printf("%s\t%s\n", c1, c2);
+	while ((*line)[i] != '-')
+		i++;
 	while (cell2)
 	{
-		ft_printf("e %{RED}s\n", cell2->name);
-		if (ft_strstr(c1, cell2->name) == c1)
+		if (!ft_strncmp(*line, cell2->name, i) ||
+				!ft_strcmp((*line) + i + 1, cell2->name))
 		{
-			if (!cell1)
-				cell1 = cell2;
-			else
-			{
-		ft_printf("linking : %{RED}s\t%{RED}s\n", cell2->name, cell1->name);
+			if (cell1)
 				return (links_maker(cell1, cell2));
-			}
-		}
-		else if (ft_strstr(c2, cell2->name) == c2)
-		{
-			if (!cell1)
-				cell1 = cell2;
-			else
-			{
-		ft_printf("linking : %{RED}s\t%{RED}s\n", cell2->name, cell1->name);
-				return (links_maker(cell1, cell2));
-			}
-
+			cell1 = cell2;
 		}
 		cell2 = cell2->next;
 	}

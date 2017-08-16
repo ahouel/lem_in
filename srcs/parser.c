@@ -6,74 +6,65 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/30 15:30:37 by ahouel            #+#    #+#             */
-/*   Updated: 2017/06/08 15:08:54 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/08/08 17:28:20 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-static void diboug(t_env *e)
+static int	fourmie_maker(t_env *e)
 {
-	t_cell *tmp;
-	t_link	*tp;
+	t_fourmie	*tab;
+	int			i;
+	t_cell		*cell;
 
-	tmp = NULL;
-	tmp = *e->cell_lst;
-	while (tmp)
+	tab = NULL;
+	i = -1;
+	cell = *e->cell_lst;
+	while (cell)
 	{
-		ft_printf("%{RED}s%{RED}s\n", "test dans\t", tmp->name);
-		tp = tmp->link_lst;
-		while (tp)
-		{
-			ft_printf("%{RED}s%{BLUE}s\n", "link vers\t", tp->link->name);
-			tp = tp->next;
-		}
-		tmp = tmp->next;
+		if (cell->type == 'a')
+			break ;
+		else
+			cell = cell->next;
 	}
+	if (!(tab = (t_fourmie*)malloc(sizeof(t_fourmie) * e->nb_f + 1)))
+		return (0);
+	while (++i < e->nb_f)
+	{
+		tab[i].nb = i + 1;
+		tab[i].cell = cell;
+	}
+	e->f_tab = tab;
+	return (1);
 }
 
-static void deboug(t_env *e)
-{
-	t_cell *tmp;
-
-	tmp = NULL;
-	tmp = *e->cell_lst;
-	while (tmp)
-	{
-	ft_printf("%{BLUE}p\t%{BLUE}s\n", tmp, tmp->name);
-		tmp = tmp->next;
-	}
-}
-
-int	parser(t_env *e)
+int			parser(t_env *e)
 {
 	char	*line;
 	int		ret;
 
-	ret = 0;
+	ret = 1;
 	line = NULL;
-	e->line = &line;
-	get_next_line(0, &line); // FREEEEEEEEEEEE
-	if (!line)
+	get_next_line(0, &line);
+	if (!line || (e->nb_f = ft_atoi(line)) < 1)
 		return (-1);
-	if ((e->nb_f = ft_atoi(line)) < 1)
+	ft_printf("%s\n", line);
+	ft_printf("bipbip\n");
+	line ? ft_memdel((void**)&line) : 0;
+	while (get_next_line(0, &line))
 	{
-		e->nb_fs = e->nb_f;
-		debug("fourmie fail");
+		ret = reader(e, &line, ret, 'b');
+		if (ret < 0)
+			return (ret);
+		else if (!ret)
+			break ;
+		ft_printf("%s\n", line);
+		line ? ft_memdel((void**)&line) : 0;
+	}
+	line ? ft_memdel((void**)&line) : 0;
+	if (!fourmie_maker(e))
 		return (-2);
-	}
-	if (!(e->nb_c = cells_parser(e)))
-	{
-		debug("cell fail");
-		return (-2);
-	}
-	deboug(e);
-	while ((ret = links_parser(e)) > 0)
-	{
-		ft_printf("ret : %d\n", ret);
-	}
-	debug("pata");
-	diboug(e);
-	ret = resolver(e);
+	ft_putchar('\n');
 	return (ret);
 }

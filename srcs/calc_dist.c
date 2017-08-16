@@ -1,41 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_link.c                                       :+:      :+:    :+:   */
+/*   calc_dist.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/06/02 17:17:11 by ahouel            #+#    #+#             */
-/*   Updated: 2017/07/30 15:36:16 by ahouel           ###   ########.fr       */
+/*   Created: 2017/07/27 01:08:34 by ahouel            #+#    #+#             */
+/*   Updated: 2017/07/27 05:38:43 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-int	error_link(t_env *e, char *line)
+int	calc_dist(t_env *e, t_cell *end, int dst)
 {
-	size_t	i;
+	t_link	*link;
 	t_cell	*cell;
-	t_cell	*c1;
-	t_cell	*c2;
+	int		ret;
 
-	i = 0;
-	c1 = NULL;
-	c2 = NULL;
-	cell = *e->cell_lst;
-	if (!line)
-		return (0);
-	while (line[i] && line[i] != '-')
-		++i;
-	if (line[i] != '-')
-		return (0);
-	while (cell)
+	ret = 0;
+	cell = end;
+	if (cell->type == 'a')
 	{
-		!ft_strncmp(line, cell->name, i) ? c1 = cell : 0;
-		!ft_strcmp(line + i + 1, cell->name) ? c2 = cell : 0;
-		cell = cell->next;
+		cell->dst = 0;
+		return (1);
 	}
-	if (c1 == c2 || !c1 || !c2)
-		return (0);
-	return (1);
+	cell->dst = dst++;
+	link = cell->link_lst;
+	while (link)
+	{
+		if (link->link->dst == -1 || link->link->dst > dst)
+			ret += calc_dist(e, link->link, dst);
+		link = link->next;
+	}
+	return (ret);
 }

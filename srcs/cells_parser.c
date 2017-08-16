@@ -6,7 +6,7 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/31 13:23:22 by ahouel            #+#    #+#             */
-/*   Updated: 2017/06/08 15:11:43 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/07/27 05:52:22 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ static t_cell	*cell_new(void)
 	new->type = ' ';
 	new->fourmie = 0;
 	new->name = NULL;
-	new->dist = -1;
+	new->dst = -1;
 	new->link_lst = NULL;
 	new->next = NULL;
 	return (new);
 }
 
-static int		cells_reader(t_env *e, char type)
+static int		cells_reader(t_env *e, char type, char **line)
 {
 	size_t	i;
 	t_cell	*new;
@@ -39,9 +39,9 @@ static int		cells_reader(t_env *e, char type)
 	tmp = NULL;
 	if (!(new = cell_new()))
 		return (0);
-	while ((*e->line)[i] && (*e->line)[i] != ' ')
+	while ((*line)[i] && (*line)[i] != ' ')
 		++i;
-	if (!(new->name = ft_strndup(*e->line, i)))
+	if (!(new->name = ft_strndup(*line, i)))
 		return (0);
 	new->type = type;
 	type == 'a' ? (new->fourmie = e->nb_f) : 0;
@@ -51,40 +51,11 @@ static int		cells_reader(t_env *e, char type)
 	return (1);
 }
 
-int				cells_parser(t_env *e)
+int				cells_parser(t_env *e, char type, char **line)
 {
-	int		nb;
-	char	type;
-
-	nb = 0;
-	while (get_next_line(0, e->line))
-	{
-		type = 'b';
-		if (!(ft_strcmp(*e->line, "##start")))
-		{
-			type = 'a';
-			get_next_line(0, e->line);
-		}
-		else if (!(ft_strcmp(*e->line, "##end")))
-		{
-			type = 'c';
-			get_next_line(0, e->line);
-		}
-		debug(*e->line);
-		if (!error_cell(e, *e->line))
-		{
-			debug("error cell");
-			return (0);
-		}
-		if (!cells_reader(e, type))
-			return (0);
-		nb++;
-		if (type == 'c')
-		{
-			e->nb_c = nb;
-			return (1);
-		}
-	}
+	if (!error_cell(e, *line))
+		return (2);
+	if (!cells_reader(e, type, line))
+		return (-1);
 	return (1);
 }
-// gaffe aux relink si mauvais parse

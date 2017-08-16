@@ -6,102 +6,111 @@
 /*   By: ahouel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/05 15:15:32 by ahouel            #+#    #+#             */
-/*   Updated: 2017/06/08 19:23:00 by ahouel           ###   ########.fr       */
+/*   Updated: 2017/08/07 19:58:10 by ahouel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-static int	algo(t_env *e, t_cell *cell, int dist)
+static void	move_fourmie(t_env *e, int nb, t_link **link, int *ret)
 {
-	t_link	*link;
+	*ret ? ft_putchar(' ') : 0;
+	if (e->f_tab[nb].cell->type == 'a')
+		e->f_tab[nb].cell->fourmie--;
+	ft_printf("L%d-%s", e->f_tab[nb].nb, (*link)->link->name);
+	(*link)->link->fourmie++;
+	e->f_tab[nb].cell = (*link)->link;
+	*link = NULL;
+	(*ret)++;
+}
+
+static int	tester(t_env *e, t_link *link, int nb, int min)
+{
+	if (link->link->dst != -1 && link->link->type != 'a' &&
+			(link->link->fourmie == 0 || link->link->type == 'c')
+			&& (link->link->dst < e->f_tab[nb].cell->dst ||
+			(e->f_tab[nb].cell->type == 'a' && link->link->dst <
+			min + e->f_tab[nb].cell->fourmie)))
+		return (1);
+	return (0);
+}
+
+static int	algo(t_env *e, int min)
+{
+	int		nb;
 	int		ret;
+	t_link	*link;
 
 	ret = 0;
-	link = cell->link_lst;
-	cell->dist = dist;
-	//	if (dist <= e->nb_fs)
-	//	{
-	while (link)
+	e->cheat = 0;
+	nb = -1;
+	while (++nb < e->nb_f)
 	{
-	//	ft_printf("cell %s\tlink : %s\n", cell->name, link->link->name);
-	//	printf("link dist %d, dist %d\n", link->link->dist, dist);
-		if (cell->type != 'a')
-			if (link->link->dist > dist || link->link->dist == -1)
+		link = e->f_tab[nb].cell->link_lst;
+		while (link)
+		{
+			if (tester(e, link, nb, min) && ((e->f_tab[nb].cell->type != 'a' ||
+							link->link->type != 'c') || e->cheat == 0))
 			{
-				if (link->link->fourmie > 0 && (cell->fourmie == 0 || cell->type == 'c'))
-				{
-					ft_printf("%s prend a %s\n", cell->name, link->link->name);
-					cell->fourmie++;
-					link->link->fourmie--;
-					link->link->type == 'a' ? (e->nb_fs--) : 0;
-					ret += 1;
-				}
-				ret += algo(e, link->link, dist + 1);
+				if (e->f_tab[nb].cell->type == 'a' && link->link->type == 'c'
+						&& e->cheat == 0 && CHEAT == 0)
+					e->cheat = 1;
+				move_fourmie(e, nb, &link, &ret);
 			}
-		link = link->next;
+			else
+				link = link->next;
+		}
 	}
-	//	}
-	cell->dist = -1;
 	return (ret);
 }
-static void testy(t_env *e)
+
+static int	resolver2(t_env *e, t_link *link)
 {
-	t_cell *cell;
+	int		min_dst;
+	t_cell	*cell;
 
-	cell = NULL;
-	cell = *e->cell_lst;
-	debug("PASSAGE SOUS ALGO");
-	while (cell)
+	min_dst = -1;
+	while (link)
 	{
-		ft_printf("%s a %d fourmie\n", cell->name, cell->fourmie);
-		cell = cell->next;
+		if (min_dst == -1 || (link->link->dst < min_dst &&
+					link->link->dst > -1))
+			min_dst = link->link->dst;
+		link = link->next;
 	}
-
+	while (algo(e, min_dst))
+	{
+		ft_putchar('\n');
+		cell = *e->cell_lst;
+		while (cell)
+		{
+			if (cell->type == 'b')
+				cell->fourmie = 0;
+			cell = cell->next;
+		}
+	}
+	return (1);
 }
 
-int	resolver(t_env *e)
+int			resolver(t_env *e)
 {
 	t_cell	*cell;
-	t_cell *celltst;
-	int		i;
 
-	i = 0;
-
-	cell = NULL;
-	celltst = NULL;
-	cell = *e->cell_lst;
-	debug("RESOLVER");
-	//	while (cell)
-	//	{
-	//		if (!ft_strcmp(cell->name, "toto"))
-	//			ft_printf("%{CYAN}c\n", cell->type);
-	//		if (!ft_strcmp(cell->name, "tete"))
-	//			cell->dist = 1;
-	//		if (!ft_strcmp(cell->name, "tata"))
-	//			cell->fourmie = 1;
-	//		if (!ft_strcmp(cell->name, "tutu"))
-	//			cell->dist = 10;
-	//		if (!ft_strcmp(cell->name, "titi"))
-	//			cell->fourmie = 1;
-	//		cell = cell->next;
-	//	}
 	cell = *e->cell_lst;
 	while (cell)
 	{
 		if (cell->type == 'c')
-		{
-			celltst = cell;
-			e->nb_fs = 10;
-			ft_printf("%{BLUE}s\n", cell->name);
 			break ;
-		}
 		cell = cell->next;
 	}
-	while (++i < 8)
+	if (!cell || !calc_dist(e, cell, 0))
+		return (-1);
+	cell = *e->cell_lst;
+	while (cell)
 	{
-		algo(e, cell, 0);
-		testy(e);
+		if (cell->type == 'a')
+			break ;
+		cell = cell->next;
 	}
-	return (1);
+	sort_links(cell);
+	return (resolver2(e, cell->link_lst));
 }
